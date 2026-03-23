@@ -59,4 +59,7 @@
     <Folder Include="Tables" />
     <Folder Include="NewFolder1\" />
   </ItemGroup>
+  <ItemGroup>
+    <Build Include="Tables\User.sql" />
+  </ItemGroup>
 </Project>
