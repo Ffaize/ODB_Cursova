@@ -1,4 +1,6 @@
-﻿namespace WebAPI.Entities
+﻿using WebAPI.Entities.Enums;
+
+namespace WebAPI.Entities
 {
     public class User
     {
