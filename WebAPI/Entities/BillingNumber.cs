@@ -1,3 +1,5 @@
+using WebAPI.Entities.Enums;
+
 namespace WebAPI.Entities
 {
     public class BillingNumber
@@ -11,23 +13,5 @@ namespace WebAPI.Entities
         public DateTime CreatedAt { get; set; }
         public DateTime UpdatedAt { get; set; }
         public Guid UserId { get; set; }
-    }
-
-    public enum AccountType
-    {
-        Checking = 1,
-        Savings = 2,
-        MoneyMarket = 3,
-        CertificateOfDeposit = 4,
-        BusinessAccount = 5
-    }
-
-    public enum AccountStatus
-    {
-        Active = 1,
-        Inactive = 2,
-        Frozen = 3,
-        Closed = 4,
-        Suspended = 5
     }
 }
