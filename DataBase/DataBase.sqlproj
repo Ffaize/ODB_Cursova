@@ -1,4 +1,4 @@
-﻿<?xml version="1.0" encoding="utf-8"?>
+<?xml version="1.0" encoding="utf-8"?>
 <Project DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003" ToolsVersion="4.0">
   <PropertyGroup>
     <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
@@ -57,9 +57,11 @@
   <ItemGroup>
     <Folder Include="Properties" />
     <Folder Include="Tables" />
-    <Folder Include="NewFolder1\" />
+    <Folder Include="StoredProcedures" />
+    <Folder Include="StoredProcedures\Users" />
   </ItemGroup>
   <ItemGroup>
-    <Build Include="Tables\User.sql" />
+    <Build Include="Tables\Users.sql" />
+    <Build Include="Tables\BillingNumbers.sql" />
   </ItemGroup>
 </Project>
