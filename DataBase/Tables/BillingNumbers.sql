@@ -7,6 +7,6 @@ CREATE TABLE [dbo].[BillingNumbers] (
     [Status]          INT NOT NULL DEFAULT (1),
     [CreatedAt]       DATETIME2 NOT NULL DEFAULT (GETUTCDATE()),
     [UpdatedAt]       DATETIME2 NOT NULL DEFAULT (GETUTCDATE()),
-    [UserId]          UNIQUEIDENTIFIER NOT NULL,
-    CONSTRAINT [FK_BillingNumbers_Users] FOREIGN KEY ([UserId]) REFERENCES [dbo].[Users]([Id])
+    [CustomerId]          UNIQUEIDENTIFIER NOT NULL,
+    CONSTRAINT [FK_BillingNumbers_Customers] FOREIGN KEY ([CustomerId]) REFERENCES [dbo].[Customers]([Id])
 );

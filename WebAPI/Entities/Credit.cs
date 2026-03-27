@@ -10,9 +10,9 @@
         public string Currency { get; set; }
         public DateTime CreatedAt { get; set; }
         public DateTime NextPayment { get; set; }
-        public DateTime? LastPaid { get; set; }
+        public DateTime? LastPaiment { get; set; }
         public DateTime? ClosedAt { get; set; }
         public bool IsClosed { get; set; }
-        public Guid UserId { get; set; }
+        public Guid CustomerId { get; set; }
     }
 }

@@ -1,0 +1,16 @@
+﻿CREATE TABLE [dbo].[Credits]
+(
+	[Id] UNIQUEIDENTIFIER NOT NULL PRIMARY KEY,
+	[FullAmount] DECIMAL(18, 2) NOT NULL,
+	[RemainingToPay] DECIMAL(18, 2) NOT NULL,
+	[MonthlyPayment] DECIMAL(18, 2) NOT NULL,
+	[DurationInMonths] INT NOT NULL,
+	[Currency] NVARCHAR(3) NOT NULL,
+	[CreatedAt] DATETIME2 NOT NULL,
+	[NextPayment] DATETIME2 NOT NULL,
+	[LastPayment] DATETIME2 NULL DEFAULT NULL,
+	[ClosedAt] DATETIME2 NULL DEFAULT NULL,
+	[IsClosed] BIT NOT NULL DEFAULT 0,
+	[CustomerId] UNIQUEIDENTIFIER NOT NULL,
+	CONSTRAINT [FK_Credits_Customers] FOREIGN KEY ([CustomerId]) REFERENCES [dbo].[Customers]([Id])
+)
