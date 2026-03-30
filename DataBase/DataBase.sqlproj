@@ -58,12 +58,25 @@
     <Folder Include="Properties" />
     <Folder Include="Tables" />
     <Folder Include="StoredProcedures" />
-    <Folder Include="StoredProcedures\Users" />
+    <Folder Include="StoredProcedures\Customers" />
+    <Folder Include="StoredProcedures\ActionLogs" />
+    <Folder Include="StoredProcedures\BillingNumbers" />
+    <Folder Include="StoredProcedures\BillingOperations" />
+    <Folder Include="StoredProcedures\Cards" />
+    <Folder Include="StoredProcedures\Credits" />
   </ItemGroup>
   <ItemGroup>
     <Build Include="Tables\Customers.sql" />
     <Build Include="Tables\BillingNumbers.sql" />
     <Build Include="Tables\BillingOperations.sql" />
     <Build Include="Tables\Credits.sql" />
+    <Build Include="Tables\Cards.sql" />
+    <Build Include="Tables\ActionsLog.sql" />
+    <Build Include="StoredProcedures\ActionLogs\sp_ActionLogs_GetAll.sql" />
+    <Build Include="StoredProcedures\BillingNumbers\sp_BillingNumbers_GetAll.sql" />
+    <Build Include="StoredProcedures\BillingOperations\sp_BillingOperations_GetAll.sql" />
+    <Build Include="StoredProcedures\Cards\sp_Cards_GetAll.sql" />
+    <Build Include="StoredProcedures\Credits\sp_Credits_GetAll.sql" />
+    <Build Include="StoredProcedures\Customers\sp_Customers_GetAll.sql" />
   </ItemGroup>
 </Project>

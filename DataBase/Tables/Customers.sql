@@ -4,6 +4,5 @@ CREATE TABLE [dbo].[Customers] (
     [Surname]         NVARCHAR(MAX) NOT NULL,
     [Email]           NVARCHAR(MAX) NOT NULL,
     [PasswordHash]    NVARCHAR(MAX) NOT NULL,
-    [CreatedAt]       DATETIME2 NOT NULL DEFAULT (GETUTCDATE()),
-    [BillingNumberId] UNIQUEIDENTIFIER NOT NULL
+    [CreatedAt]       DATETIME2 NOT NULL DEFAULT (GETUTCDATE())
 );
