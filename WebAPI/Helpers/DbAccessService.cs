@@ -2,7 +2,7 @@
 using Dapper;
 using Microsoft.Data.SqlClient;
 
-namespace WebAPI.DataServices
+namespace WebAPI.Helpers
 {
     public class DbAccessService
     {
@@ -14,7 +14,7 @@ namespace WebAPI.DataServices
         /// <typeparam name="TResult"></typeparam>
         /// <param name="procedureName"></param>
         /// <returns></returns>
-        private static async Task<List<TResult>> GetItems<TResult>(string procedureName)
+        public static async Task<List<TResult>> GetItems<TResult>(string procedureName)
         {
             await using var connection = new SqlConnection(ConnectionString);
             var result = await connection.QueryAsync<TResult>(procedureName, commandType: CommandType.StoredProcedure);
@@ -29,7 +29,7 @@ namespace WebAPI.DataServices
         /// <param name="entity"></param>
         /// <returns></returns>
 
-        private static async Task<int> AddRecord<TEntity>(string procedureName, TEntity entity)
+        public static async Task<int> AddRecord<TEntity>(string procedureName, TEntity entity)
         {
             await using var connection = new SqlConnection(ConnectionString);
             return await connection.ExecuteAsync(procedureName, entity, commandType: CommandType.StoredProcedure);
@@ -42,7 +42,7 @@ namespace WebAPI.DataServices
         /// <param name="procedureName"></param>
         /// <param name="entity"></param>
         /// <returns></returns>
-        private static async Task<int> UpdateRecord<TEntity>(string procedureName, TEntity entity)
+        public static async Task<int> UpdateRecord<TEntity>(string procedureName, TEntity entity)
         {
             await using var connection = new SqlConnection(ConnectionString);
             return await connection.ExecuteAsync(procedureName, entity, commandType: CommandType.StoredProcedure);
@@ -54,7 +54,7 @@ namespace WebAPI.DataServices
         /// <param name="procedureName"></param>
         /// <param name="id"></param>
         /// <returns></returns>
-        private static async Task<int> DeleteRecord(string procedureName, Guid id)
+        public static async Task<int> DeleteRecord(string procedureName, Guid id)
         {
             await using var connection = new SqlConnection(ConnectionString);
             var parameters = new DynamicParameters();
@@ -70,7 +70,7 @@ namespace WebAPI.DataServices
         /// <param name="procedureName"></param>
         /// <param name="id"></param>
         /// <returns></returns>
-        private static async Task<TResult?> GetItemById<TResult>(string procedureName, Guid id)
+        public static async Task<TResult?> GetItemById<TResult>(string procedureName, Guid id)
         {
             await using var connection = new SqlConnection(ConnectionString);
             var parameters = new DynamicParameters();
@@ -87,7 +87,7 @@ namespace WebAPI.DataServices
         /// <param name="parameterName"></param>
         /// <param name="value"></param>
         /// <returns></returns>
-        private static async Task<List<TResult>> GetAllByParameter<TResult>(string procedureName, string parameterName, object value)
+        public static async Task<List<TResult>> GetAllByParameter<TResult>(string procedureName, string parameterName, object value)
         {
             await using var connection = new SqlConnection(ConnectionString);
             var parameters = new DynamicParameters();
@@ -105,7 +105,7 @@ namespace WebAPI.DataServices
         /// <param name="parameterName"></param>
         /// <param name="value"></param>
         /// <returns></returns>
-        private static async Task<TResult?> GetOneByParameter<TResult>(string procedureName, string parameterName, object value)
+        public static async Task<TResult?> GetOneByParameter<TResult>(string procedureName, string parameterName, object value)
         {
             await using var connection = new SqlConnection(ConnectionString);
             var parameters = new DynamicParameters();

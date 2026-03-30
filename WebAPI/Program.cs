@@ -1,3 +1,5 @@
+using WebAPI.DataServices;
+using WebAPI.Helpers;
 
 namespace WebAPI
 {
@@ -10,6 +12,8 @@ namespace WebAPI
             builder.Services.AddControllers();
             builder.Services.AddEndpointsApiExplorer();
             builder.Services.AddSwaggerGen();
+
+            builder.Services.AddScoped<CustomerService>();
 
             var app = builder.Build();
 
