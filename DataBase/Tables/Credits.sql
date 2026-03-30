@@ -11,6 +11,6 @@
 	[LastPayment] DATETIME2 NULL DEFAULT NULL,
 	[ClosedAt] DATETIME2 NULL DEFAULT NULL,
 	[IsClosed] BIT NOT NULL DEFAULT 0,
-	[CustomerId] UNIQUEIDENTIFIER NOT NULL,
-	CONSTRAINT [FK_Credits_Customers] FOREIGN KEY ([CustomerId]) REFERENCES [dbo].[Customers]([Id])
+	[BillingNumberId] UNIQUEIDENTIFIER NOT NULL,
+	CONSTRAINT [FK_Credits_BillingNumbers] FOREIGN KEY ([BillingNumberId]) REFERENCES [dbo].[BillingNumbers]([Id])
 )

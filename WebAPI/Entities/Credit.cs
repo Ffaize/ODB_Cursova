@@ -13,6 +13,6 @@
         public DateTime? LastPaiment { get; set; }
         public DateTime? ClosedAt { get; set; }
         public bool IsClosed { get; set; }
-        public Guid CustomerId { get; set; }
+        public Guid BillingNumberId { get; set; }
     }
 }

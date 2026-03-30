@@ -64,6 +64,8 @@
     <Folder Include="StoredProcedures\BillingOperations" />
     <Folder Include="StoredProcedures\Cards" />
     <Folder Include="StoredProcedures\Credits" />
+    <Folder Include="StoredProcedures\Employees" />
+    <Folder Include="StoredProcedures\Branches" />
   </ItemGroup>
   <ItemGroup>
     <Build Include="Tables\Customers.sql" />
@@ -80,5 +82,7 @@
     <Build Include="StoredProcedures\Customers\sp_Customers_GetAll.sql" />
     <Build Include="Tables\Branches.sql" />
     <Build Include="Tables\Employees.sql" />
+    <Build Include="StoredProcedures\Employees\sp_Employees_GetAll.sql" />
+    <Build Include="StoredProcedures\Branches\sp_Branches_GetAll.sql" />
   </ItemGroup>
 </Project>

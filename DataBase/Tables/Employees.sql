@@ -10,4 +10,5 @@
     [BranchId] UNIQUEIDENTIFIER NOT NULL,
     [Salary] DECIMAL(MAX) NOT NULL,
     [HiredAt] DATETIME2 NOT NULL,
+    CONSTRAINT [FK_Employees_Branches] FOREIGN KEY ([BranchId]) REFERENCES [dbo].[Branches]([Id])
 )

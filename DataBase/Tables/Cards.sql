@@ -9,4 +9,6 @@
 	[cvv] int NOT NULL,
 	[BillingNumberId] UNIQUEIDENTIFIER NOT NULL,
 	[CustomerId] UNIQUEIDENTIFIER NOT NULL,
+	CONSTRAINT [FK_Cards_BillingNumbers] FOREIGN KEY ([BillingNumberId]) REFERENCES [dbo].[BillingNumbers]([Id]),
+	CONSTRAINT [FK_Cards_Customers] FOREIGN KEY ([CustomerId]) REFERENCES [dbo].[Customers]([Id])
 )
