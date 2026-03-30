@@ -1,0 +1,11 @@
+﻿CREATE TABLE [dbo].[Branches]
+(
+	[Id] UNIQUEIDENTIFIER NOT NULL PRIMARY KEY,
+	[Name] NVARCHAR(255) NOT NULL,
+	[NumberOfEmployees] INT NOT NULL,
+	[NumberOfBranch] INT NOT NULL,
+	[Location] NVARCHAR(255) NOT NULL,
+	[ContactEmail] NVARCHAR(255) NOT NULL,
+	[ContactPhone] NVARCHAR(50) NOT NULL,
+	[CreatedAt] DATETIME2 NOT NULL DEFAULT GETDATE()
+)

@@ -78,5 +78,7 @@
     <Build Include="StoredProcedures\Cards\sp_Cards_GetAll.sql" />
     <Build Include="StoredProcedures\Credits\sp_Credits_GetAll.sql" />
     <Build Include="StoredProcedures\Customers\sp_Customers_GetAll.sql" />
+    <Build Include="Tables\Branches.sql" />
+    <Build Include="Tables\Employees.sql" />
   </ItemGroup>
 </Project>
