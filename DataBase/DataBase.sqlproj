@@ -84,5 +84,9 @@
     <Build Include="Tables\Employees.sql" />
     <Build Include="StoredProcedures\Employees\sp_Employees_GetAll.sql" />
     <Build Include="StoredProcedures\Branches\sp_Branches_GetAll.sql" />
+    <Build Include="StoredProcedures\Customers\sp_Customers_GetById.sql" />
+    <Build Include="StoredProcedures\Customers\sp_Customers_Add.sql" />
+    <Build Include="StoredProcedures\Customers\sp_Customers_Update.sql" />
+    <Build Include="StoredProcedures\Customers\sp_Customers_Delete.sql" />
   </ItemGroup>
 </Project>
