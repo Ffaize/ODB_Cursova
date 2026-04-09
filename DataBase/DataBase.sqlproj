@@ -74,6 +74,11 @@
     <Folder Include="Triggers\Credits" />
     <Folder Include="Triggers\BillingNumbers" />
     <Folder Include="Triggers\BillingOperations" />
+    <Folder Include="Views" />
+    <Folder Include="Views\Analytics" />
+    <Folder Include="Views\Reporting" />
+    <Folder Include="Views\Audit" />
+    <Folder Include="Views\Operations" />
   </ItemGroup>
   <ItemGroup>
     <Build Include="Tables\Customers.sql" />
@@ -145,5 +150,15 @@
     <Build Include="Triggers\BillingOperations\tr_BillingOperations_Delete.sql" />
     <Build Include="Triggers\BillingOperations\tr_BillingOperations_Insert.sql" />
     <Build Include="Triggers\BillingOperations\tr_BillingOperations_Update.sql" />
+    <Build Include="Views\Analytics\v_CustomerAccountsSummary.sql" />
+    <Build Include="Views\Analytics\v_CreditPortfolioAnalysis.sql" />
+    <Build Include="Views\Analytics\v_BranchPerformance.sql" />
+    <Build Include="Views\Analytics\v_CustomerLoanRiskAssessment.sql" />
+    <Build Include="Views\Reporting\v_TransactionHistory.sql" />
+    <Build Include="Views\Reporting\v_EmployeeBranchStatistics.sql" />
+    <Build Include="Views\Reporting\v_CardPortfolioStatus.sql" />
+    <Build Include="Views\Audit\v_AuditTrailByOperation.sql" />
+    <Build Include="Views\Audit\v_RecentAnomalies.sql" />
+    <Build Include="Views\Operations\v_CustomerBalanceDaily.sql" />
   </ItemGroup>
 </Project>
