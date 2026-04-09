@@ -66,6 +66,14 @@
     <Folder Include="StoredProcedures\Credits" />
     <Folder Include="StoredProcedures\Employees" />
     <Folder Include="StoredProcedures\Branches" />
+    <Folder Include="Triggers" />
+    <Folder Include="Triggers\Customers" />
+    <Folder Include="Triggers\Employees" />
+    <Folder Include="Triggers\Branches" />
+    <Folder Include="Triggers\Cards" />
+    <Folder Include="Triggers\Credits" />
+    <Folder Include="Triggers\BillingNumbers" />
+    <Folder Include="Triggers\BillingOperations" />
   </ItemGroup>
   <ItemGroup>
     <Build Include="Tables\Customers.sql" />
@@ -116,5 +124,26 @@
     <Build Include="StoredProcedures\Customers\sp_Customers_Add.sql" />
     <Build Include="StoredProcedures\Customers\sp_Customers_Update.sql" />
     <Build Include="StoredProcedures\Customers\sp_Customers_Delete.sql" />
+    <Build Include="Triggers\Customers\tr_Customers_Delete.sql" />
+    <Build Include="Triggers\Customers\tr_Customers_Insert.sql" />
+    <Build Include="Triggers\Customers\tr_Customers_Update.sql" />
+    <Build Include="Triggers\Employees\tr_Employees_Delete.sql" />
+    <Build Include="Triggers\Employees\tr_Employees_Insert.sql" />
+    <Build Include="Triggers\Employees\tr_Employees_Update.sql" />
+    <Build Include="Triggers\Branches\tr_Branches_Delete.sql" />
+    <Build Include="Triggers\Branches\tr_Branches_Insert.sql" />
+    <Build Include="Triggers\Branches\tr_Branches_Update.sql" />
+    <Build Include="Triggers\Cards\tr_Cards_Delete.sql" />
+    <Build Include="Triggers\Cards\tr_Cards_Insert.sql" />
+    <Build Include="Triggers\Cards\tr_Cards_Update.sql" />
+    <Build Include="Triggers\Credits\tr_Credits_Delete.sql" />
+    <Build Include="Triggers\Credits\tr_Credits_Insert.sql" />
+    <Build Include="Triggers\Credits\tr_Credits_Update.sql" />
+    <Build Include="Triggers\BillingNumbers\tr_BillingNumbers_Delete.sql" />
+    <Build Include="Triggers\BillingNumbers\tr_BillingNumbers_Insert.sql" />
+    <Build Include="Triggers\BillingNumbers\tr_BillingNumbers_Update.sql" />
+    <Build Include="Triggers\BillingOperations\tr_BillingOperations_Delete.sql" />
+    <Build Include="Triggers\BillingOperations\tr_BillingOperations_Insert.sql" />
+    <Build Include="Triggers\BillingOperations\tr_BillingOperations_Update.sql" />
   </ItemGroup>
 </Project>

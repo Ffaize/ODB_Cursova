@@ -1,5 +1,6 @@
 ﻿using Bogus;
 using WebAPI.Entities;
+using WebAPI.Entities.Enums;
 
 namespace WebAPI.Helpers
 {
@@ -15,9 +16,119 @@ namespace WebAPI.Helpers
                 .RuleFor(c => c.PasswordHash, f => f.Internet.Password())
                 .RuleFor(c => c.CreatedAt, f => f.Date.Past());
 
-            var employees = faker.Generate(count);
+            return faker.Generate(count) ?? [];
+        }
 
-            return employees ?? [];
+        public static List<Employee> GenerateMockEmployees(int count = 1)
+        {
+            var faker = new Faker<Employee>("en")
+                .RuleFor(e => e.Id, f => Guid.NewGuid())
+                .RuleFor(e => e.Name, f => f.Name.FirstName())
+                .RuleFor(e => e.Surname, f => f.Name.LastName())
+                .RuleFor(e => e.Email, (f, e) => f.Internet.Email(e.Name, e.Surname))
+                .RuleFor(e => e.PasswordHash, f => f.Internet.Password())
+                .RuleFor(e => e.CreatedAt, f => f.Date.Past(365))
+                .RuleFor(e => e.Role, f => f.PickRandom<EmployeeRole>())
+                .RuleFor(e => e.BranchId, f => Guid.NewGuid())
+                .RuleFor(e => e.Salary, f => f.Random.Float(1000, 10000))
+                .RuleFor(e => e.HiredAt, f => f.Date.Past(365));
+
+            return faker.Generate(count) ?? [];
+        }
+
+        public static List<Branch> GenerateMockBranches(int count = 1)
+        {
+            var faker = new Faker<Branch>("en")
+                .RuleFor(b => b.Id, f => Guid.NewGuid())
+                .RuleFor(b => b.Name, f => f.Company.CompanyName())
+                .RuleFor(b => b.NumberOfEmployees, f => f.Random.Int(0, 50))
+                .RuleFor(b => b.NumberOfBranch, f => f.Random.Int(1, 20))
+                .RuleFor(b => b.Location, f => $"{f.Address.City()}, {f.Address.Country()}")
+                .RuleFor(b => b.ContactEmail, f => f.Internet.Email())
+                .RuleFor(b => b.ContactPhone, f => f.Phone.PhoneNumber())
+                .RuleFor(b => b.CreatedAt, f => f.Date.Past(730));
+
+            return faker.Generate(count) ?? [];
+        }
+
+        public static List<Card> GenerateMockCards(int count = 1)
+        {
+            var faker = new Faker<Card>("en")
+                .RuleFor(c => c.Id, f => Guid.NewGuid())
+                .RuleFor(c => c.CardNumber, f => f.Finance.CreditCardNumber())
+                .RuleFor(c => c.Status, f => f.PickRandom<CardStatus>())
+                .RuleFor(c => c.CardHolderName, f => f.Name.FullName())
+                .RuleFor(c => c.LaunchDate, f => f.Date.Past(365))
+                .RuleFor(c => c.ExpirationDate, f => f.Date.Future(1825))
+                .RuleFor(c => c.cvv, f => f.Random.Int(100, 999))
+                .RuleFor(c => c.BillingNumberId, f => Guid.NewGuid())
+                .RuleFor(c => c.CustomerId, f => Guid.NewGuid());
+
+            return faker.Generate(count) ?? [];
+        }
+
+        public static List<Credit> GenerateMockCredits(int count = 1)
+        {
+            var faker = new Faker<Credit>("en")
+                .RuleFor(c => c.Id, f => Guid.NewGuid())
+                .RuleFor(c => c.FullAmount, f => (decimal)f.Random.Double(5000, 500000))
+                .RuleFor(c => c.RemainingToPay, (f, c) => (decimal)f.Random.Double(0, (double)c.FullAmount))
+                .RuleFor(c => c.MonthlyPayment, (f, c) => c.FullAmount / (decimal)f.Random.Int(12, 360))
+                .RuleFor(c => c.DurationInMonths, f => f.Random.Int(12, 360))
+                .RuleFor(c => c.Currency, f => f.PickRandom(new[] { "USD", "EUR", "UAH" }))
+                .RuleFor(c => c.CreatedAt, f => f.Date.Past(730))
+                .RuleFor(c => c.NextPayment, f => f.Date.Future(90))
+                .RuleFor(c => c.LastPaiment, f => f.Date.Past(60))
+                .RuleFor(c => c.ClosedAt, f => f.Random.Bool() ? f.Date.Past(30) : null)
+                .RuleFor(c => c.IsClosed, (f, c) => c.ClosedAt.HasValue)
+                .RuleFor(c => c.BillingNumberId, f => Guid.NewGuid());
+
+            return faker.Generate(count) ?? [];
+        }
+
+        public static List<BillingNumber> GenerateMockBillingNumbers(int count = 1)
+        {
+            var faker = new Faker<BillingNumber>("en")
+                .RuleFor(b => b.Id, f => Guid.NewGuid())
+                .RuleFor(b => b.AccountNumber, f => f.Finance.Iban())
+                .RuleFor(b => b.Balance, f => (decimal)f.Random.Double(0, 100000))
+                .RuleFor(b => b.Currency, f => f.PickRandom(new[] { "USD", "EUR", "UAH" }))
+                .RuleFor(b => b.AccountType, f => f.PickRandom<AccountType>())
+                .RuleFor(b => b.Status, f => f.PickRandom<AccountStatus>())
+                .RuleFor(b => b.CreatedAt, f => f.Date.Past(730))
+                .RuleFor(b => b.UpdatedAt, f => f.Date.Past(30))
+                .RuleFor(b => b.CustomerId, f => Guid.NewGuid());
+
+            return faker.Generate(count) ?? [];
+        }
+
+        public static List<BillingOperation> GenerateMockBillingOperations(int count = 1)
+        {
+            var faker = new Faker<BillingOperation>("en")
+                .RuleFor(bo => bo.Id, f => Guid.NewGuid())
+                .RuleFor(bo => bo.Amount, f => (decimal)f.Random.Double(100, 10000))
+                .RuleFor(bo => bo.Currency, f => f.PickRandom(new[] { "USD", "EUR", "UAH" }))
+                .RuleFor(bo => bo.CreatedAt, f => f.Date.Past(365))
+                .RuleFor(bo => bo.Description, f => f.Lorem.Sentence())
+                .RuleFor(bo => bo.PaymentPurpose, f => f.PickRandom<PaymentPurpose>())
+                .RuleFor(bo => bo.CustomerId, f => f.Random.Bool() ? Guid.NewGuid() : null)
+                .RuleFor(bo => bo.BillingNumberIdFrom, f => f.Random.Bool() ? Guid.NewGuid() : null)
+                .RuleFor(bo => bo.BillingNumberIdTo, f => f.Random.Bool() ? Guid.NewGuid() : null)
+                .RuleFor(bo => bo.CreditId, f => f.Random.Bool() ? Guid.NewGuid() : null);
+
+            return faker.Generate(count) ?? [];
+        }
+
+        public static List<ActionLog> GenerateMockActionLogs(int count = 1)
+        {
+            var faker = new Faker<ActionLog>("en")
+                .RuleFor(al => al.Id, f => Guid.NewGuid())
+                .RuleFor(al => al.Description, f => f.Lorem.Sentence())
+                .RuleFor(al => al.Operation, f => f.PickRandom(new[] { "CREATE", "READ", "UPDATE", "DELETE" }))
+                .RuleFor(al => al.CreatedAt, f => f.Date.Past(365))
+                .RuleFor(al => al.CreatedBy, f => Guid.NewGuid());
+
+            return faker.Generate(count) ?? [];
         }
     }
 }
