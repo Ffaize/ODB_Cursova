@@ -1,6 +1,6 @@
 CREATE VIEW [dbo].[v_CardPortfolioStatus]
 AS
-SELECT 
+SELECT TOP (100) PERCENT
     ca.[Id],
     c.[Name] + ' ' + c.[Surname] AS [CardholderName],
     RIGHT(ca.[CardNumber], 4) AS [CardNumberLast4],
@@ -11,7 +11,6 @@ SELECT
         WHEN ca.[Status] = 3 THEN 'Blocked'
         ELSE 'Unknown'
     END AS [CardStatus],
-    ca.[CardHolderName],
     ca.[LaunchDate],
     ca.[ExpirationDate],
     DATEDIFF(DAY, GETUTCDATE(), ca.[ExpirationDate]) AS [DaysUntilExpiration],

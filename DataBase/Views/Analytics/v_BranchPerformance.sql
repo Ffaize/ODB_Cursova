@@ -1,6 +1,6 @@
 CREATE VIEW [dbo].[v_BranchPerformance]
 AS
-SELECT 
+SELECT TOP (100) PERCENT
     b.[Id],
     b.[Name] AS [BranchName],
     b.[Location],

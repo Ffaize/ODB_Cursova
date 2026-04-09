@@ -1,6 +1,6 @@
 CREATE VIEW [dbo].[v_CreditPortfolioAnalysis]
 AS
-SELECT 
+SELECT TOP (100) PERCENT
     c.[Id],
     cu.[Name] + ' ' + cu.[Surname] AS [CustomerName],
     c.[FullAmount],

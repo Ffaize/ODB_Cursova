@@ -1,6 +1,6 @@
 CREATE VIEW [dbo].[v_AuditTrailByOperation]
 AS
-SELECT 
+SELECT TOP (100) PERCENT
     al.[Id],
     al.[CreatedAt] AS [EventDate],
     al.[Operation],

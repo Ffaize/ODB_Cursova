@@ -1,6 +1,6 @@
 CREATE VIEW [dbo].[v_TransactionHistory]
 AS
-SELECT 
+SELECT TOP (100) PERCENT
     bo.[Id],
     bo.[CreatedAt] AS [TransactionDate],
     c.[Name] + ' ' + c.[Surname] AS [CustomerName],

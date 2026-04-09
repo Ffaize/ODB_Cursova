@@ -1,6 +1,6 @@
 CREATE VIEW [dbo].[v_CustomerLoanRiskAssessment]
 AS
-SELECT 
+SELECT TOP (100) PERCENT
     c.[Id],
     c.[Name] + ' ' + c.[Surname] AS [CustomerName],
     c.[Email],

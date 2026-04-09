@@ -1,6 +1,6 @@
 CREATE VIEW [dbo].[v_RecentAnomalies]
 AS
-SELECT 
+SELECT TOP (100) PERCENT
     bo.[Id],
     c.[Name] + ' ' + c.[Surname] AS [CustomerName],
     bo.[Amount],
