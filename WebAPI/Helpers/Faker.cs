@@ -30,7 +30,7 @@ namespace WebAPI.Helpers
                 .RuleFor(e => e.CreatedAt, f => f.Date.Past(365))
                 .RuleFor(e => e.Role, f => f.PickRandom<EmployeeRole>())
                 .RuleFor(e => e.BranchId, f => Guid.NewGuid())
-                .RuleFor(e => e.Salary, f => f.Random.Float(1000, 10000))
+                .RuleFor(e => e.Salary, f => (decimal)f.Random.Double(1000, 10000))
                 .RuleFor(e => e.HiredAt, f => f.Date.Past(365));
 
             return faker.Generate(count) ?? [];
@@ -60,7 +60,7 @@ namespace WebAPI.Helpers
                 .RuleFor(c => c.CardHolderName, f => f.Name.FullName())
                 .RuleFor(c => c.LaunchDate, f => f.Date.Past(365))
                 .RuleFor(c => c.ExpirationDate, f => f.Date.Future(1825))
-                .RuleFor(c => c.cvv, f => f.Random.Int(100, 999))
+                .RuleFor(c => c.Cvv, f => f.Random.Int(100, 999))
                 .RuleFor(c => c.BillingNumberId, f => Guid.NewGuid())
                 .RuleFor(c => c.CustomerId, f => Guid.NewGuid());
 
@@ -78,7 +78,7 @@ namespace WebAPI.Helpers
                 .RuleFor(c => c.Currency, f => f.PickRandom(new[] { "USD", "EUR", "UAH" }))
                 .RuleFor(c => c.CreatedAt, f => f.Date.Past(730))
                 .RuleFor(c => c.NextPayment, f => f.Date.Future(90))
-                .RuleFor(c => c.LastPaiment, f => f.Date.Past(60))
+                .RuleFor(c => c.LastPayment, f => f.Date.Past(60))
                 .RuleFor(c => c.ClosedAt, f => f.Random.Bool() ? f.Date.Past(30) : null)
                 .RuleFor(c => c.IsClosed, (f, c) => c.ClosedAt.HasValue)
                 .RuleFor(c => c.BillingNumberId, f => Guid.NewGuid());
@@ -126,7 +126,7 @@ namespace WebAPI.Helpers
                 .RuleFor(al => al.Description, f => f.Lorem.Sentence())
                 .RuleFor(al => al.Operation, f => f.PickRandom(new[] { "CREATE", "READ", "UPDATE", "DELETE" }))
                 .RuleFor(al => al.CreatedAt, f => f.Date.Past(365))
-                .RuleFor(al => al.CreatedBy, f => Guid.NewGuid());
+                .RuleFor(al => al.CreatedBy, f => f.Name.FullName());
 
             return faker.Generate(count) ?? [];
         }

@@ -10,7 +10,7 @@ namespace WebAPI.Entities
         public string CardHolderName { get; set; }
         public DateTime LaunchDate { get; set; }
         public DateTime ExpirationDate { get; set; }
-        public int cvv { get; set; }
+        public int Cvv { get; set; }
         public Guid BillingNumberId { get; set; }
         public Guid CustomerId { get; set; }
     }

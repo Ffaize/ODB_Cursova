@@ -9,7 +9,6 @@ BEGIN
         [CardNumberLast4],
         [CardNumber],
         [CardStatus],
-        [CardHolderName],
         [LaunchDate],
         [ExpirationDate],
         [DaysUntilExpiration],

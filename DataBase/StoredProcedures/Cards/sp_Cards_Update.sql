@@ -4,7 +4,7 @@ CREATE PROCEDURE [dbo].[sp_Cards_Update]
     @Status INT,
     @CardHolderName NVARCHAR(255),
     @ExpirationDate DATETIME2,
-    @cvv INT,
+    @Cvv INT,
     @BillingNumberId UNIQUEIDENTIFIER,
     @CustomerId UNIQUEIDENTIFIER
 AS
@@ -14,7 +14,7 @@ BEGIN
         [Status] = @Status,
         [CardHolderName] = @CardHolderName,
         [ExpirationDate] = @ExpirationDate,
-        [cvv] = @cvv,
+        [cvv] = @Cvv,
         [BillingNumberId] = @BillingNumberId,
         [CustomerId] = @CustomerId
     WHERE [Id] = @Id
