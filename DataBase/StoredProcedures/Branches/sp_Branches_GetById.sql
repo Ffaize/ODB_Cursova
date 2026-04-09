@@ -1,7 +1,8 @@
-CREATE PROCEDURE [dbo].[sp_Branches_GetAll]
+CREATE PROCEDURE [dbo].[sp_Branches_GetById]
+    @Id UNIQUEIDENTIFIER
 AS
 BEGIN
     SELECT [Id], [Name], [NumberOfEmployees], [NumberOfBranch], [Location], [ContactEmail], [ContactPhone], [CreatedAt]
     FROM [dbo].[Branches]
-    ORDER BY [CreatedAt] DESC
+    WHERE [Id] = @Id
 END

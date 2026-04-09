@@ -1,7 +1,8 @@
-CREATE PROCEDURE [dbo].[sp_BillingNumbers_GetAll]
+CREATE PROCEDURE [dbo].[sp_BillingNumbers_GetById]
+    @Id UNIQUEIDENTIFIER
 AS
 BEGIN
     SELECT [Id], [AccountNumber], [Balance], [Currency], [AccountType], [Status], [CreatedAt], [UpdatedAt], [CustomerId]
     FROM [dbo].[BillingNumbers]
-    ORDER BY [CreatedAt] DESC
+    WHERE [Id] = @Id
 END

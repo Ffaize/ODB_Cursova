@@ -1,7 +1,8 @@
-CREATE PROCEDURE [dbo].[sp_ActionLogs_GetAll]
+CREATE PROCEDURE [dbo].[sp_ActionLogs_GetById]
+    @Id UNIQUEIDENTIFIER
 AS
 BEGIN
     SELECT [Id], [Description], [Operation], [CreatedAt], [CreatedBy]
     FROM [dbo].[ActionsLog]
-    ORDER BY [CreatedAt] DESC
+    WHERE [Id] = @Id
 END

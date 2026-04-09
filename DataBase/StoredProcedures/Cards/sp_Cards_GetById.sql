@@ -1,7 +1,8 @@
-CREATE PROCEDURE [dbo].[sp_Cards_GetAll]
+CREATE PROCEDURE [dbo].[sp_Cards_GetById]
+    @Id UNIQUEIDENTIFIER
 AS
 BEGIN
     SELECT [Id], [CardNumber], [Status], [CardHolderName], [LaunchDate], [ExpirationDate], [cvv], [BillingNumberId], [CustomerId]
     FROM [dbo].[Cards]
-    ORDER BY [LaunchDate] DESC
+    WHERE [Id] = @Id
 END
