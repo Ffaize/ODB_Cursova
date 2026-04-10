@@ -1,4 +1,5 @@
 using WebAPI.Entities;
+using WebAPI.Entities.ExtendedEntities;
 using WebAPI.Helpers;
 
 namespace WebAPI.DataServices
@@ -13,6 +14,16 @@ namespace WebAPI.DataServices
         public async Task<Card?> GetCardById(Guid id)
         {
             return await DbAccessService.GetItemById<Card>("sp_Cards_GetById", id);
+        }
+
+        public async Task<List<ExtendedCard>> GetExtendedAllCards()
+        {
+            return await DbAccessService.GetItems<ExtendedCard>("sp_Cards_GetExtended");
+        }
+
+        public async Task<ExtendedCard?> GetExtendedCardById(Guid id)
+        {
+            return await DbAccessService.GetItemById<ExtendedCard>("sp_Cards_GetByIdExtended", id);
         }
 
         public async Task<bool> AddCard(Card card)

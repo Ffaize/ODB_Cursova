@@ -126,5 +126,39 @@ namespace WebAPI.Controllers
                 return StatusCode(StatusCodes.Status500InternalServerError, e.Message);
             }
         }
+
+        [HttpGet("extended")]
+        public async Task<IActionResult> GetExtendedAllCredits()
+        {
+            try
+            {
+                var items = await creditService.GetExtendedAllCredits();
+                return Ok(items);
+            }
+            catch (Exception e)
+            {
+                logger.LogError(e, "An error occurred while fetching extended credits.");
+                return StatusCode(StatusCodes.Status500InternalServerError, e.Message);
+            }
+        }
+
+        [HttpGet("extended/{id}")]
+        public async Task<IActionResult> GetExtendedCreditById(Guid id)
+        {
+            try
+            {
+                var item = await creditService.GetExtendedCreditById(id);
+                if (item == null)
+                {
+                    return NotFound($"Credit with ID {id} not found.");
+                }
+                return Ok(item);
+            }
+            catch (Exception e)
+            {
+                logger.LogError(e, "An error occurred while fetching extended credit with ID {Id}.", id);
+                return StatusCode(StatusCodes.Status500InternalServerError, e.Message);
+            }
+        }
     }
 }

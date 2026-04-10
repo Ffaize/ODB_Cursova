@@ -1,4 +1,5 @@
 using WebAPI.Entities;
+using WebAPI.Entities.ExtendedEntities;
 using WebAPI.Helpers;
 
 namespace WebAPI.DataServices
@@ -13,6 +14,16 @@ namespace WebAPI.DataServices
         public async Task<BillingOperation?> GetBillingOperationById(Guid id)
         {
             return await DbAccessService.GetItemById<BillingOperation>("sp_BillingOperations_GetById", id);
+        }
+
+        public async Task<List<ExtendedBillingOperation>> GetExtendedAllBillingOperations()
+        {
+            return await DbAccessService.GetItems<ExtendedBillingOperation>("sp_BillingOperations_GetExtended");
+        }
+
+        public async Task<ExtendedBillingOperation?> GetExtendedBillingOperationById(Guid id)
+        {
+            return await DbAccessService.GetItemById<ExtendedBillingOperation>("sp_BillingOperations_GetByIdExtended", id);
         }
 
         public async Task<bool> AddBillingOperation(BillingOperation billingOperation)

@@ -1,4 +1,5 @@
 using WebAPI.Entities;
+using WebAPI.Entities.ExtendedEntities;
 using WebAPI.Helpers;
 
 namespace WebAPI.DataServices
@@ -13,6 +14,16 @@ namespace WebAPI.DataServices
         public async Task<Credit?> GetCreditById(Guid id)
         {
             return await DbAccessService.GetItemById<Credit>("sp_Credits_GetById", id);
+        }
+
+        public async Task<List<ExtendedCredit>> GetExtendedAllCredits()
+        {
+            return await DbAccessService.GetItems<ExtendedCredit>("sp_Credits_GetExtended");
+        }
+
+        public async Task<ExtendedCredit?> GetExtendedCreditById(Guid id)
+        {
+            return await DbAccessService.GetItemById<ExtendedCredit>("sp_Credits_GetByIdExtended", id);
         }
 
         public async Task<bool> AddCredit(Credit credit)

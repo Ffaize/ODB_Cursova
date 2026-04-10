@@ -84,6 +84,12 @@
     <Folder Include="Views\Reporting" />
     <Folder Include="Views\Audit" />
     <Folder Include="Views\Operations" />
+    <Folder Include="StoredProcedures\ExtendedEntities" />
+    <Folder Include="StoredProcedures\ExtendedEntities\Employees" />
+    <Folder Include="StoredProcedures\ExtendedEntities\Cards" />
+    <Folder Include="StoredProcedures\ExtendedEntities\Credits" />
+    <Folder Include="StoredProcedures\ExtendedEntities\BillingNumbers" />
+    <Folder Include="StoredProcedures\ExtendedEntities\BillingOperations" />
   </ItemGroup>
   <ItemGroup>
     <Build Include="Tables\Customers.sql" />
@@ -197,5 +203,15 @@
     <Build Include="StoredProcedures\Views\Reporting\sp_TransactionHistory_GetByCustomerId.sql" />
     <Build Include="StoredProcedures\Views\Reporting\sp_TransactionHistory_GetByDateRange.sql" />
     <Build Include="StoredProcedures\Views\Reporting\sp_TransactionHistory_GetLargeTransactions.sql" />
+    <Build Include="StoredProcedures\ExtendedEntities\Employees\sp_Employees_GetExtended.sql" />
+    <Build Include="StoredProcedures\ExtendedEntities\Employees\sp_Employees_GetByIdExtended.sql" />
+    <Build Include="StoredProcedures\ExtendedEntities\Cards\sp_Cards_GetExtended.sql" />
+    <Build Include="StoredProcedures\ExtendedEntities\Cards\sp_Cards_GetByIdExtended.sql" />
+    <Build Include="StoredProcedures\ExtendedEntities\Credits\sp_Credits_GetExtended.sql" />
+    <Build Include="StoredProcedures\ExtendedEntities\Credits\sp_Credits_GetByIdExtended.sql" />
+    <Build Include="StoredProcedures\ExtendedEntities\BillingNumbers\sp_BillingNumbers_GetExtended.sql" />
+    <Build Include="StoredProcedures\ExtendedEntities\BillingNumbers\sp_BillingNumbers_GetByIdExtended.sql" />
+    <Build Include="StoredProcedures\ExtendedEntities\BillingOperations\sp_BillingOperations_GetExtended.sql" />
+    <Build Include="StoredProcedures\ExtendedEntities\BillingOperations\sp_BillingOperations_GetByIdExtended.sql" />
   </ItemGroup>
 </Project>

@@ -2,6 +2,7 @@ using Microsoft.AspNetCore.Http.HttpResults;
 using Microsoft.AspNetCore.Mvc;
 using WebAPI.DataServices;
 using WebAPI.Entities;
+using WebAPI.Entities.ExtendedEntities;
 
 namespace WebAPI.Controllers
 {
@@ -123,6 +124,40 @@ namespace WebAPI.Controllers
             catch (Exception e)
             {
                 logger.LogError(e, "An error occurred while generating mock employees.");
+                return StatusCode(StatusCodes.Status500InternalServerError, e.Message);
+            }
+        }
+
+        [HttpGet("extended")]
+        public async Task<IActionResult> GetExtendedAllEmployees()
+        {
+            try
+            {
+                var items = await employeeService.GetExtendedAllEmployees();
+                return Ok(items);
+            }
+            catch (Exception e)
+            {
+                logger.LogError(e, "An error occurred while fetching extended employees.");
+                return StatusCode(StatusCodes.Status500InternalServerError, e.Message);
+            }
+        }
+
+        [HttpGet("extended/{id}")]
+        public async Task<IActionResult> GetExtendedEmployeeById(Guid id)
+        {
+            try
+            {
+                var item = await employeeService.GetExtendedEmployeeById(id);
+                if (item == null)
+                {
+                    return NotFound($"Employee with ID {id} not found.");
+                }
+                return Ok(item);
+            }
+            catch (Exception e)
+            {
+                logger.LogError(e, "An error occurred while fetching extended employee with ID {Id}.", id);
                 return StatusCode(StatusCodes.Status500InternalServerError, e.Message);
             }
         }

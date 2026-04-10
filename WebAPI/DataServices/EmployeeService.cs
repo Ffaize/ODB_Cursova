@@ -1,4 +1,5 @@
 using WebAPI.Entities;
+using WebAPI.Entities.ExtendedEntities;
 using WebAPI.Helpers;
 
 namespace WebAPI.DataServices
@@ -13,6 +14,16 @@ namespace WebAPI.DataServices
         public async Task<Employee?> GetEmployeeById(Guid id)
         {
             return await DbAccessService.GetItemById<Employee>("sp_Employees_GetById", id);
+        }
+
+        public async Task<List<ExtendedEmployee>> GetExtendedAllEmployees()
+        {
+            return await DbAccessService.GetItems<ExtendedEmployee>("sp_Employees_GetExtended");
+        }
+
+        public async Task<ExtendedEmployee?> GetExtendedEmployeeById(Guid id)
+        {
+            return await DbAccessService.GetItemById<ExtendedEmployee>("sp_Employees_GetByIdExtended", id);
         }
 
         public async Task<bool> AddEmployee(Employee employee)

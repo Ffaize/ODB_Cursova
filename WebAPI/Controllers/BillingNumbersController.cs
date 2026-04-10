@@ -126,5 +126,39 @@ namespace WebAPI.Controllers
                 return StatusCode(StatusCodes.Status500InternalServerError, e.Message);
             }
         }
+
+        [HttpGet("extended")]
+        public async Task<IActionResult> GetExtendedAllBillingNumbers()
+        {
+            try
+            {
+                var items = await billingNumberService.GetExtendedAllBillingNumbers();
+                return Ok(items);
+            }
+            catch (Exception e)
+            {
+                logger.LogError(e, "An error occurred while fetching extended billing numbers.");
+                return StatusCode(StatusCodes.Status500InternalServerError, e.Message);
+            }
+        }
+
+        [HttpGet("extended/{id}")]
+        public async Task<IActionResult> GetExtendedBillingNumberById(Guid id)
+        {
+            try
+            {
+                var item = await billingNumberService.GetExtendedBillingNumberById(id);
+                if (item == null)
+                {
+                    return NotFound($"Billing number with ID {id} not found.");
+                }
+                return Ok(item);
+            }
+            catch (Exception e)
+            {
+                logger.LogError(e, "An error occurred while fetching extended billing number with ID {Id}.", id);
+                return StatusCode(StatusCodes.Status500InternalServerError, e.Message);
+            }
+        }
     }
 }
