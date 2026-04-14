@@ -113,5 +113,25 @@ namespace WebAPI.Helpers
 
             return await connection.QuerySingleOrDefaultAsync<TResult>(procedureName, parameters, commandType: CommandType.StoredProcedure);
         }
+
+        /// <summary>
+        /// Executes a stored procedure with custom parameters and returns a single result.
+        /// </summary>
+        /// <typeparam name="TResult"></typeparam>
+        /// <param name="procedureName"></param>
+        /// <param name="parameters"></param>
+        /// <returns></returns>
+        public static async Task<TResult?> ExecuteStoredProcedure<TResult>(string procedureName, Dictionary<string, object?> parameters)
+        {
+            await using var connection = new SqlConnection(ConnectionString);
+            var dynamicParams = new DynamicParameters();
+            
+            foreach (var param in parameters)
+            {
+                dynamicParams.Add($"@{param.Key}", param.Value);
+            }
+
+            return await connection.QuerySingleOrDefaultAsync<TResult>(procedureName, dynamicParams, commandType: CommandType.StoredProcedure);
+        }
     }
 }

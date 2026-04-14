@@ -2,6 +2,7 @@
 using Microsoft.AspNetCore.Mvc;
 using WebAPI.DataServices;
 using WebAPI.Entities;
+using WebAPI.Entities.DTOs;
 
 namespace WebAPI.Controllers
 {
@@ -123,6 +124,69 @@ namespace WebAPI.Controllers
             catch (Exception e)
             {
                 logger.LogError(e, "An error occurred while generating mock customers.");
+                return StatusCode(StatusCodes.Status500InternalServerError, e.Message);
+            }
+        }
+
+        [HttpPost("create-with-account")]
+        public async Task<IActionResult> CreateCustomerWithAccount([FromBody] CreateCustomerWithAccountRequest request)
+        {
+            try
+            {
+                if (request == null)
+                {
+                    return BadRequest("Request data is required.");
+                }
+
+                if (string.IsNullOrWhiteSpace(request.Name) || string.IsNullOrWhiteSpace(request.Surname) ||
+                    string.IsNullOrWhiteSpace(request.Email) || string.IsNullOrWhiteSpace(request.Password))
+                {
+                    return BadRequest("Name, Surname, Email, and Password are required fields.");
+                }
+
+                var result = await customerService.CreateCustomerWithAccount(request);
+                
+                if (result == null)
+                {
+                    return StatusCode(StatusCodes.Status500InternalServerError, "Failed to create customer with account. Email may already exist.");
+                }
+
+                return CreatedAtAction(nameof(GetCustomerById), new { id = result.CustomerId }, result);
+            }
+            catch (Exception e)
+            {
+                logger.LogError(e, "An error occurred while creating customer with account.");
+                return StatusCode(StatusCodes.Status500InternalServerError, e.Message);
+            }
+        }
+
+        [HttpGet("{customerId}/accounts")]
+        public async Task<IActionResult> GetCustomerAccounts(Guid customerId)
+        {
+            try
+            {
+                if (customerId == Guid.Empty)
+                {
+                    return BadRequest("Valid CustomerId is required.");
+                }
+
+                var result = await customerService.GetCustomerAccountsWithBalance(customerId);
+                
+                if (result == null)
+                {
+                    return StatusCode(StatusCodes.Status500InternalServerError, "Failed to retrieve customer accounts.");
+                }
+
+                if (result.Accounts.Count == 0)
+                {
+                    return NotFound($"No accounts found for customer with ID {customerId}.");
+                }
+
+                return Ok(result);
+            }
+            catch (Exception e)
+            {
+                logger.LogError(e, "An error occurred while retrieving customer accounts for customer with ID {CustomerId}.", customerId);
                 return StatusCode(StatusCodes.Status500InternalServerError, e.Message);
             }
         }

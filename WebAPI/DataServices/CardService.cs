@@ -1,4 +1,5 @@
 using WebAPI.Entities;
+using WebAPI.Entities.DTOs;
 using WebAPI.Entities.ExtendedEntities;
 using WebAPI.Helpers;
 
@@ -55,6 +56,56 @@ namespace WebAPI.DataServices
                 return false;
             }
             return true;
+        }
+
+        public async Task<IssueCardResponse?> IssueCard(IssueCardRequest request)
+        {
+            try
+            {
+                if (request == null || request.BillingNumberId == Guid.Empty)
+                {
+                    logger.LogWarning("Invalid input for IssueCard");
+                    return null;
+                }
+
+                var dynamicParams = new Dictionary<string, object?>
+                {
+                    { "BillingNumberId", request.BillingNumberId },
+                    { "CardType", request.CardType }
+                };
+
+                var result = await DbAccessService.ExecuteStoredProcedure<IssueCardResponse>(
+                    "sp_Cards_IssueCard", dynamicParams);
+
+                return result;
+            }
+            catch (Exception ex)
+            {
+                logger.LogError(ex, "Error issuing card");
+                return null;
+            }
+        }
+
+        public async Task<bool> BlockCard(Guid cardId)
+        {
+            try
+            {
+                if (cardId == Guid.Empty)
+                {
+                    logger.LogWarning("Invalid CardId");
+                    return false;
+                }
+
+                var result = await DbAccessService.GetOneByParameter<int>(
+                    "sp_Cards_BlockCard", "CardId", cardId);
+
+                return result > 0;
+            }
+            catch (Exception ex)
+            {
+                logger.LogError(ex, "Error blocking card");
+                return false;
+            }
         }
     }
 }

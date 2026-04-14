@@ -2,6 +2,7 @@ using Microsoft.AspNetCore.Http.HttpResults;
 using Microsoft.AspNetCore.Mvc;
 using WebAPI.DataServices;
 using WebAPI.Entities;
+using WebAPI.Entities.DTOs;
 
 namespace WebAPI.Controllers
 {
@@ -157,6 +158,150 @@ namespace WebAPI.Controllers
             catch (Exception e)
             {
                 logger.LogError(e, "An error occurred while fetching extended billing operation with ID {Id}.", id);
+                return StatusCode(StatusCodes.Status500InternalServerError, e.Message);
+            }
+        }
+
+        [HttpGet("{billingNumberId}/balance")]
+        public async Task<IActionResult> CheckBalance(Guid billingNumberId)
+        {
+            try
+            {
+                if (billingNumberId == Guid.Empty)
+                {
+                    return BadRequest("Valid BillingNumberId is required.");
+                }
+
+                var result = await billingOperationService.CheckBalance(billingNumberId);
+                
+                if (result == null)
+                {
+                    return NotFound($"Account with ID {billingNumberId} not found.");
+                }
+
+                return Ok(result);
+            }
+            catch (Exception e)
+            {
+                logger.LogError(e, "An error occurred while checking balance for account {BillingNumberId}.", billingNumberId);
+                return StatusCode(StatusCodes.Status500InternalServerError, e.Message);
+            }
+        }
+
+        [HttpPost("transfer-between")]
+        public async Task<IActionResult> TransferBetweenAccounts([FromBody] TransferBetweenAccountsRequest request)
+        {
+            try
+            {
+                if (request == null)
+                {
+                    return BadRequest("Request data is required.");
+                }
+
+                if (request.FromBillingNumberId == Guid.Empty || request.ToBillingNumberId == Guid.Empty)
+                {
+                    return BadRequest("Valid source and destination account IDs are required.");
+                }
+
+                if (request.Amount <= 0)
+                {
+                    return BadRequest("Amount must be greater than 0.");
+                }
+
+                var result = await billingOperationService.TransferBetweenAccounts(request);
+                
+                if (result == null)
+                {
+                    return StatusCode(StatusCodes.Status500InternalServerError, "Failed to transfer between accounts.");
+                }
+
+                return Ok(result);
+            }
+            catch (Exception e)
+            {
+                logger.LogError(e, "An error occurred while transferring between accounts.");
+                return StatusCode(StatusCodes.Status500InternalServerError, e.Message);
+            }
+        }
+
+        [HttpPost("transfer-to-other")]
+        public async Task<IActionResult> TransferToOtherCustomer([FromBody] TransferToOtherCustomerRequest request)
+        {
+            try
+            {
+                if (request == null)
+                {
+                    return BadRequest("Request data is required.");
+                }
+
+                if (request.FromBillingNumberId == Guid.Empty)
+                {
+                    return BadRequest("Valid source account ID is required.");
+                }
+
+                if (string.IsNullOrWhiteSpace(request.ToAccountNumber))
+                {
+                    return BadRequest("Destination account number is required.");
+                }
+
+                if (request.Amount <= 0)
+                {
+                    return BadRequest("Amount must be greater than 0.");
+                }
+
+                if (string.IsNullOrWhiteSpace(request.Description))
+                {
+                    return BadRequest("Transfer description is required.");
+                }
+
+                var result = await billingOperationService.TransferToOtherCustomer(request);
+                
+                if (result == null)
+                {
+                    return StatusCode(StatusCodes.Status500InternalServerError, "Failed to transfer to other customer.");
+                }
+
+                return Ok(result);
+            }
+            catch (Exception e)
+            {
+                logger.LogError(e, "An error occurred while transferring to other customer.");
+                return StatusCode(StatusCodes.Status500InternalServerError, e.Message);
+            }
+        }
+
+        [HttpPost("pay")]
+        public async Task<IActionResult> PayBilling([FromBody] PayBillingRequest request)
+        {
+            try
+            {
+                if (request == null)
+                {
+                    return BadRequest("Request data is required.");
+                }
+
+                if (request.BillingNumberId == Guid.Empty)
+                {
+                    return BadRequest("Valid BillingNumberId is required.");
+                }
+
+                if (request.Amount <= 0)
+                {
+                    return BadRequest("Amount must be greater than 0.");
+                }
+
+                var result = await billingOperationService.PayBilling(request);
+                
+                if (result == null)
+                {
+                    return StatusCode(StatusCodes.Status500InternalServerError, "Failed to process payment.");
+                }
+
+                return Ok(result);
+            }
+            catch (Exception e)
+            {
+                logger.LogError(e, "An error occurred while processing billing payment.");
                 return StatusCode(StatusCodes.Status500InternalServerError, e.Message);
             }
         }

@@ -1,4 +1,5 @@
 ﻿using WebAPI.Entities;
+using WebAPI.Entities.DTOs;
 using WebAPI.Helpers;
 
 namespace WebAPI.DataServices
@@ -44,6 +45,63 @@ namespace WebAPI.DataServices
         {
             var rowsAffected = await DbAccessService.DeleteRecord("sp_Customers_Delete", id);
             return rowsAffected > 0;
+        }
+
+        public async Task<CreateCustomerWithAccountResponse?> CreateCustomerWithAccount(CreateCustomerWithAccountRequest request)
+        {
+            try
+            {
+                if (string.IsNullOrWhiteSpace(request.Name) || string.IsNullOrWhiteSpace(request.Surname) ||
+                    string.IsNullOrWhiteSpace(request.Email) || string.IsNullOrWhiteSpace(request.Password))
+                {
+                    logger.LogWarning("Invalid input for CreateCustomerWithAccount: missing required fields");
+                    return null;
+                }
+
+                var dynamicParams = new Dictionary<string, object?>
+                {
+                    { "Name", request.Name.Trim() },
+                    { "Surname", request.Surname.Trim() },
+                    { "Email", request.Email.Trim() },
+                    { "PasswordHash", request.Password }
+                };
+
+                var result = await DbAccessService.ExecuteStoredProcedure<CreateCustomerWithAccountResponse>(
+                    "sp_Customers_CreateWithAccount", dynamicParams);
+
+                return result;
+            }
+            catch (Exception ex)
+            {
+                logger.LogError(ex, "Error creating customer with account");
+                return null;
+            }
+        }
+
+        public async Task<GetCustomerAccountsResponse?> GetCustomerAccountsWithBalance(Guid customerId)
+        {
+            try
+            {
+                if (customerId == Guid.Empty)
+                {
+                    logger.LogWarning("Invalid CustomerId");
+                    return null;
+                }
+
+                var accounts = await DbAccessService.GetAllByParameter<CustomerAccountItem>(
+                    "sp_Customers_GetAllAccountsWithBalance", "CustomerId", customerId);
+
+                return new GetCustomerAccountsResponse
+                {
+                    CustomerId = customerId,
+                    Accounts = accounts
+                };
+            }
+            catch (Exception ex)
+            {
+                logger.LogError(ex, "Error getting customer accounts");
+                return null;
+            }
         }
     }
 }

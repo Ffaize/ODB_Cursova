@@ -2,6 +2,7 @@ using Microsoft.AspNetCore.Http.HttpResults;
 using Microsoft.AspNetCore.Mvc;
 using WebAPI.DataServices;
 using WebAPI.Entities;
+using WebAPI.Entities.DTOs;
 
 namespace WebAPI.Controllers
 {
@@ -157,6 +158,68 @@ namespace WebAPI.Controllers
             catch (Exception e)
             {
                 logger.LogError(e, "An error occurred while fetching extended card with ID {Id}.", id);
+                return StatusCode(StatusCodes.Status500InternalServerError, e.Message);
+            }
+        }
+
+        [HttpPost("issue")]
+        public async Task<IActionResult> IssueCard([FromBody] IssueCardRequest request)
+        {
+            try
+            {
+                if (request == null)
+                {
+                    return BadRequest("Request data is required.");
+                }
+
+                if (request.BillingNumberId == Guid.Empty)
+                {
+                    return BadRequest("Valid BillingNumberId is required.");
+                }
+
+                if (request.CardType <= 0)
+                {
+                    return BadRequest("Valid CardType is required.");
+                }
+
+                var result = await cardService.IssueCard(request);
+                
+                if (result == null)
+                {
+                    return StatusCode(StatusCodes.Status500InternalServerError, "Failed to issue card.");
+                }
+
+                return CreatedAtAction(nameof(GetCardById), new { id = result.CardId }, result);
+            }
+            catch (Exception e)
+            {
+                logger.LogError(e, "An error occurred while issuing card.");
+                return StatusCode(StatusCodes.Status500InternalServerError, e.Message);
+            }
+        }
+
+        [HttpPut("{cardId}/block")]
+        public async Task<IActionResult> BlockCard(Guid cardId)
+        {
+            try
+            {
+                if (cardId == Guid.Empty)
+                {
+                    return BadRequest("Valid CardId is required.");
+                }
+
+                var success = await cardService.BlockCard(cardId);
+                
+                if (!success)
+                {
+                    return StatusCode(StatusCodes.Status500InternalServerError, "Failed to block card.");
+                }
+
+                return Ok("Card blocked successfully.");
+            }
+            catch (Exception e)
+            {
+                logger.LogError(e, "An error occurred while blocking card with ID {CardId}.", cardId);
                 return StatusCode(StatusCodes.Status500InternalServerError, e.Message);
             }
         }

@@ -2,6 +2,7 @@ using Microsoft.AspNetCore.Http.HttpResults;
 using Microsoft.AspNetCore.Mvc;
 using WebAPI.DataServices;
 using WebAPI.Entities;
+using WebAPI.Entities.DTOs;
 
 namespace WebAPI.Controllers
 {
@@ -157,6 +158,104 @@ namespace WebAPI.Controllers
             catch (Exception e)
             {
                 logger.LogError(e, "An error occurred while fetching extended credit with ID {Id}.", id);
+                return StatusCode(StatusCodes.Status500InternalServerError, e.Message);
+            }
+        }
+
+        [HttpPost("open")]
+        public async Task<IActionResult> OpenCredit([FromBody] OpenCreditRequest request)
+        {
+            try
+            {
+                if (request == null)
+                {
+                    return BadRequest("Request data is required.");
+                }
+
+                if (request.CustomerId == Guid.Empty)
+                {
+                    return BadRequest("Valid CustomerId is required.");
+                }
+
+                if (request.FullAmount <= 0)
+                {
+                    return BadRequest("Full amount must be greater than 0.");
+                }
+
+                if (request.DurationInMonths <= 0)
+                {
+                    return BadRequest("Duration in months must be greater than 0.");
+                }
+
+                var result = await creditService.OpenCredit(request);
+                
+                if (result == null)
+                {
+                    return StatusCode(StatusCodes.Status500InternalServerError, "Failed to open credit.");
+                }
+
+                return CreatedAtAction(nameof(GetCreditById), new { id = result.CreditId }, result);
+            }
+            catch (Exception e)
+            {
+                logger.LogError(e, "An error occurred while opening credit.");
+                return StatusCode(StatusCodes.Status500InternalServerError, e.Message);
+            }
+        }
+
+        [HttpGet("{creditId}/schedule")]
+        public async Task<IActionResult> GetPaymentSchedule(Guid creditId)
+        {
+            try
+            {
+                if (creditId == Guid.Empty)
+                {
+                    return BadRequest("Valid CreditId is required.");
+                }
+
+                var schedule = await creditService.GetPaymentSchedule(creditId);
+                
+                if (schedule == null)
+                {
+                    return StatusCode(StatusCodes.Status500InternalServerError, "Failed to retrieve payment schedule.");
+                }
+
+                if (schedule.Count == 0)
+                {
+                    return NotFound($"No payment schedule found for credit with ID {creditId}.");
+                }
+
+                return Ok(schedule);
+            }
+            catch (Exception e)
+            {
+                logger.LogError(e, "An error occurred while retrieving payment schedule for credit with ID {CreditId}.", creditId);
+                return StatusCode(StatusCodes.Status500InternalServerError, e.Message);
+            }
+        }
+
+        [HttpPut("{creditId}/close")]
+        public async Task<IActionResult> CloseCredit(Guid creditId)
+        {
+            try
+            {
+                if (creditId == Guid.Empty)
+                {
+                    return BadRequest("Valid CreditId is required.");
+                }
+
+                var success = await creditService.CloseCredit(creditId);
+                
+                if (!success)
+                {
+                    return StatusCode(StatusCodes.Status500InternalServerError, "Failed to close credit.");
+                }
+
+                return Ok("Credit closed successfully.");
+            }
+            catch (Exception e)
+            {
+                logger.LogError(e, "An error occurred while closing credit with ID {CreditId}.", creditId);
                 return StatusCode(StatusCodes.Status500InternalServerError, e.Message);
             }
         }
