@@ -13,5 +13,6 @@ namespace WebAPI.Entities
         public int Cvv { get; set; }
         public Guid BillingNumberId { get; set; }
         public Guid CustomerId { get; set; }
+        public DateTime CreatedAt { get; set; }
     }
 }

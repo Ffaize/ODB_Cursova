@@ -29,6 +29,18 @@ namespace WebAPI.DataServices
 
         public async Task<bool> AddBillingOperation(BillingOperation billingOperation)
         {
+            // Generate ID if it's empty
+            if (billingOperation.Id == Guid.Empty)
+            {
+                billingOperation.Id = Guid.NewGuid();
+            }
+            
+            // Set CreatedAt if not set
+            if (billingOperation.CreatedAt == default)
+            {
+                billingOperation.CreatedAt = DateTime.UtcNow;
+            }
+            
             var rowsAffected = await DbAccessService.AddRecord("sp_BillingOperations_Add", billingOperation);
             return rowsAffected > 0;
         }
@@ -45,17 +57,46 @@ namespace WebAPI.DataServices
             return rowsAffected > 0;
         }
 
-        public async Task<bool> AddMockData(int count = 1)
+        public async Task<bool> AddMockData(int count = 1, BillingNumberService? billingNumberService = null, CreditService? creditService = null)
         {
-            var billingOperations = Faker.GenerateMockBillingOperations(count);
-            foreach (var billingOperation in billingOperations)
+            try
             {
-                var success = await AddBillingOperation(billingOperation);
-                if (success) continue;
-                logger.LogError("Failed to add mock billing operation with ID {BillingOperationId}", billingOperation.Id);
+                // Get existing billing numbers
+                var billingNumbers = await (billingNumberService?.GetAllBillingNumbers() ?? Task.FromResult(new List<BillingNumber>()));
+                if (!billingNumbers.Any())
+                {
+                    logger.LogWarning("No billing numbers found. Cannot generate mock billing operations without valid BillingNumberIds");
+                    return false;
+                }
+
+                var billingNumberIds = billingNumbers.Select(b => b.Id).ToList();
+
+                // Get credits if service provided (optional)
+                List<Guid>? creditIds = null;
+                if (creditService != null)
+                {
+                    var credits = await creditService.GetAllCredits();
+                    if (credits.Any())
+                    {
+                        creditIds = credits.Select(c => c.Id).ToList();
+                    }
+                }
+
+                var billingOperations = Faker.GenerateMockBillingOperations(count, billingNumberIds, creditIds);
+                foreach (var billingOperation in billingOperations)
+                {
+                    var success = await AddBillingOperation(billingOperation);
+                    if (success) continue;
+                    logger.LogError("Failed to add mock billing operation with ID {BillingOperationId}", billingOperation.Id);
+                    return false;
+                }
+                return true;
+            }
+            catch (Exception ex)
+            {
+                logger.LogError(ex, "Error generating mock billing operations");
                 return false;
             }
-            return true;
         }
 
         public async Task<CheckBalanceResponse?> CheckBalance(Guid billingNumberId)

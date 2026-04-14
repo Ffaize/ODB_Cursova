@@ -28,6 +28,18 @@ namespace WebAPI.DataServices
 
         public async Task<bool> AddBillingNumber(BillingNumber billingNumber)
         {
+            // Generate ID if it's empty
+            if (billingNumber.Id == Guid.Empty)
+            {
+                billingNumber.Id = Guid.NewGuid();
+            }
+            
+            // Set CreatedAt if not set
+            if (billingNumber.CreatedAt == default)
+            {
+                billingNumber.CreatedAt = DateTime.UtcNow;
+            }
+            
             var rowsAffected = await DbAccessService.AddRecord("sp_BillingNumbers_Add", billingNumber);
             return rowsAffected > 0;
         }
@@ -44,17 +56,34 @@ namespace WebAPI.DataServices
             return rowsAffected > 0;
         }
 
-        public async Task<bool> AddMockData(int count = 1)
+        public async Task<bool> AddMockData(int count = 1, CustomerService? customerService = null)
         {
-            var billingNumbers = Faker.GenerateMockBillingNumbers(count);
-            foreach (var billingNumber in billingNumbers)
+            try
             {
-                var success = await AddBillingNumber(billingNumber);
-                if (success) continue;
-                logger.LogError("Failed to add mock billing number with ID {BillingNumberId}", billingNumber.Id);
+                // Get existing customers to use their IDs
+                var customers = await (customerService?.GetAllCustomers() ?? Task.FromResult(new List<Customer>()));
+                
+                if (!customers.Any())
+                {
+                    logger.LogWarning("No customers found. Cannot generate mock billing numbers without valid CustomerId");
+                    return false;
+                }
+
+                var billingNumbers = Faker.GenerateMockBillingNumbers(count, customers.Select(c => c.Id).ToList());
+                foreach (var bn in billingNumbers)
+                {
+                    var success = await AddBillingNumber(bn);
+                    if (success) continue;
+                    logger.LogError("Failed to add mock billing number with ID {BillingNumberId}", bn.Id);
+                    return false;
+                }
+                return true;
+            }
+            catch (Exception ex)
+            {
+                logger.LogError(ex, "Error generating mock billing numbers");
                 return false;
             }
-            return true;
         }
     }
 }

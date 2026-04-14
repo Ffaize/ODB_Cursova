@@ -17,6 +17,18 @@ namespace WebAPI.DataServices
 
         public async Task<bool> AddActionLog(ActionLog actionLog)
         {
+            // Generate ID if it's empty
+            if (actionLog.Id == Guid.Empty)
+            {
+                actionLog.Id = Guid.NewGuid();
+            }
+            
+            // Set CreatedAt if not set
+            if (actionLog.CreatedAt == default)
+            {
+                actionLog.CreatedAt = DateTime.UtcNow;
+            }
+            
             var rowsAffected = await DbAccessService.AddRecord("sp_ActionLogs_Add", actionLog);
             return rowsAffected > 0;
         }

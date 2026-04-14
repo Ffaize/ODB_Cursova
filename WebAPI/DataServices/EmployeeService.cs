@@ -28,6 +28,18 @@ namespace WebAPI.DataServices
 
         public async Task<bool> AddEmployee(Employee employee)
         {
+            // Generate ID if it's empty
+            if (employee.Id == Guid.Empty)
+            {
+                employee.Id = Guid.NewGuid();
+            }
+            
+            // Set CreatedAt if not set
+            if (employee.CreatedAt == default)
+            {
+                employee.CreatedAt = DateTime.UtcNow;
+            }
+            
             var rowsAffected = await DbAccessService.AddRecord("sp_Employees_Add", employee);
             return rowsAffected > 0;
         }
@@ -44,17 +56,35 @@ namespace WebAPI.DataServices
             return rowsAffected > 0;
         }
 
-        public async Task<bool> AddMockData(int count = 1)
+        public async Task<bool> AddMockData(int count = 1, BranchService? branchService = null)
         {
-            var employees = Faker.GenerateMockEmployees(count);
-            foreach (var employee in employees)
+            try
             {
-                var success = await AddEmployee(employee);
-                if (success) continue;
-                logger.LogError("Failed to add mock employee with ID {EmployeeId}", employee.Id);
+                // Get existing branches to use their IDs
+                var branches = await (branchService?.GetAllBranches() ?? Task.FromResult(new List<Branch>()));
+                
+                if (!branches.Any())
+                {
+                    // If no branches, create a dummy branch first (or return error)
+                    logger.LogWarning("No branches found. Cannot generate mock employees without valid BranchId");
+                    return false;
+                }
+
+                var employees = Faker.GenerateMockEmployees(count, branches.Select(b => b.Id).ToList());
+                foreach (var employee in employees)
+                {
+                    var success = await AddEmployee(employee);
+                    if (success) continue;
+                    logger.LogError("Failed to add mock employee with ID {EmployeeId}", employee.Id);
+                    return false;
+                }
+                return true;
+            }
+            catch (Exception ex)
+            {
+                logger.LogError(ex, "Error generating mock employees");
                 return false;
             }
-            return true;
         }
     }
 }

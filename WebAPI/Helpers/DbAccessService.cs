@@ -123,15 +123,28 @@ namespace WebAPI.Helpers
         /// <returns></returns>
         public static async Task<TResult?> ExecuteStoredProcedure<TResult>(string procedureName, Dictionary<string, object?> parameters)
         {
-            await using var connection = new SqlConnection(ConnectionString);
-            var dynamicParams = new DynamicParameters();
-            
-            foreach (var param in parameters)
+            try
             {
-                dynamicParams.Add($"@{param.Key}", param.Value);
-            }
+                await using var connection = new SqlConnection(ConnectionString);
+                var dynamicParams = new DynamicParameters();
+                
+                foreach (var param in parameters)
+                {
+                    dynamicParams.Add($"@{param.Key}", param.Value);
+                }
 
-            return await connection.QuerySingleOrDefaultAsync<TResult>(procedureName, dynamicParams, commandType: CommandType.StoredProcedure);
+                return await connection.QuerySingleOrDefaultAsync<TResult>(procedureName, dynamicParams, commandType: CommandType.StoredProcedure);
+            }
+            catch (SqlException sqlEx)
+            {
+                // Log SQL errors for debugging
+                throw new InvalidOperationException($"SQL error in stored procedure '{procedureName}': {sqlEx.Message}", sqlEx);
+            }
+            catch (Exception ex)
+            {
+                // Re-throw other exceptions
+                throw;
+            }
         }
     }
 }

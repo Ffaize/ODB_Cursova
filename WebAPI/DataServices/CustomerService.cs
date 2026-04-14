@@ -18,6 +18,19 @@ namespace WebAPI.DataServices
 
         public async Task<bool> AddCustomer(Customer customer)
         {
+            // Generate ID if it's empty
+            if (customer.Id == Guid.Empty)
+            {
+                customer.Id = Guid.NewGuid();
+                logger.LogDebug("Generated new ID for customer: {CustomerId}", customer.Id);
+            }
+            
+            // Set CreatedAt if not set
+            if (customer.CreatedAt == default)
+            {
+                customer.CreatedAt = DateTime.UtcNow;
+            }
+            
             var rowsAffected = await DbAccessService.AddRecord("sp_Customers_Add", customer);
             return rowsAffected > 0;
         }
@@ -69,11 +82,29 @@ namespace WebAPI.DataServices
                 var result = await DbAccessService.ExecuteStoredProcedure<CreateCustomerWithAccountResponse>(
                     "sp_Customers_CreateWithAccount", dynamicParams);
 
+                if (result == null)
+                {
+                    logger.LogError("ExecuteStoredProcedure returned null for sp_Customers_CreateWithAccount");
+                }
+
                 return result;
+            }
+            catch (InvalidOperationException ex)
+            {
+                // This happens when SP throws RAISERROR
+                if (ex.Message.Contains("Email already exists"))
+                {
+                    logger.LogWarning("CreateCustomerWithAccount failed: Email already exists");
+                }
+                else
+                {
+                    logger.LogError(ex, "Error creating customer with account (SQL error). Details: {ErrorMessage}", ex.InnerException?.Message ?? ex.Message);
+                }
+                return null;
             }
             catch (Exception ex)
             {
-                logger.LogError(ex, "Error creating customer with account");
+                logger.LogError(ex, "Error creating customer with account. Details: {ErrorMessage}", ex.Message);
                 return null;
             }
         }

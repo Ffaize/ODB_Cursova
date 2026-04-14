@@ -17,6 +17,19 @@ namespace WebAPI.DataServices
 
         public async Task<bool> AddBranch(Branch branch)
         {
+            // Generate ID if it's empty
+            if (branch.Id == Guid.Empty)
+            {
+                branch.Id = Guid.NewGuid();
+                logger.LogDebug("Generated new ID for branch: {BranchId}", branch.Id);
+            }
+            
+            // Set CreatedAt if not set
+            if (branch.CreatedAt == default)
+            {
+                branch.CreatedAt = DateTime.UtcNow;
+            }
+            
             var rowsAffected = await DbAccessService.AddRecord("sp_Branches_Add", branch);
             return rowsAffected > 0;
         }

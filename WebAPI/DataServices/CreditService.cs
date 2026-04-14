@@ -29,6 +29,18 @@ namespace WebAPI.DataServices
 
         public async Task<bool> AddCredit(Credit credit)
         {
+            // Generate ID if it's empty
+            if (credit.Id == Guid.Empty)
+            {
+                credit.Id = Guid.NewGuid();
+            }
+            
+            // Set CreatedAt if not set
+            if (credit.CreatedAt == default)
+            {
+                credit.CreatedAt = DateTime.UtcNow;
+            }
+            
             var rowsAffected = await DbAccessService.AddRecord("sp_Credits_Add", credit);
             return rowsAffected > 0;
         }
@@ -45,17 +57,35 @@ namespace WebAPI.DataServices
             return rowsAffected > 0;
         }
 
-        public async Task<bool> AddMockData(int count = 1)
+        public async Task<bool> AddMockData(int count = 1, BillingNumberService? billingNumberService = null)
         {
-            var credits = Faker.GenerateMockCredits(count);
-            foreach (var credit in credits)
+            try
             {
-                var success = await AddCredit(credit);
-                if (success) continue;
-                logger.LogError("Failed to add mock credit with ID {CreditId}", credit.Id);
+                // Get existing billing numbers
+                var billingNumbers = await (billingNumberService?.GetAllBillingNumbers() ?? Task.FromResult(new List<BillingNumber>()));
+                if (!billingNumbers.Any())
+                {
+                    logger.LogWarning("No billing numbers found. Cannot generate mock credits without valid BillingNumberId");
+                    return false;
+                }
+
+                var billingNumberIds = billingNumbers.Select(b => b.Id).ToList();
+
+                var credits = Faker.GenerateMockCredits(count, billingNumberIds);
+                foreach (var credit in credits)
+                {
+                    var success = await AddCredit(credit);
+                    if (success) continue;
+                    logger.LogError("Failed to add mock credit with ID {CreditId}", credit.Id);
+                    return false;
+                }
+                return true;
+            }
+            catch (Exception ex)
+            {
+                logger.LogError(ex, "Error generating mock credits");
                 return false;
             }
-            return true;
         }
 
         public async Task<OpenCreditResponse?> OpenCredit(OpenCreditRequest request)

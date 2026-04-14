@@ -29,6 +29,18 @@ namespace WebAPI.DataServices
 
         public async Task<bool> AddCard(Card card)
         {
+            // Generate ID if it's empty
+            if (card.Id == Guid.Empty)
+            {
+                card.Id = Guid.NewGuid();
+            }
+            
+            // Set CreatedAt if not set
+            if (card.CreatedAt == default)
+            {
+                card.CreatedAt = DateTime.UtcNow;
+            }
+            
             var rowsAffected = await DbAccessService.AddRecord("sp_Cards_Add", card);
             return rowsAffected > 0;
         }
@@ -45,17 +57,44 @@ namespace WebAPI.DataServices
             return rowsAffected > 0;
         }
 
-        public async Task<bool> AddMockData(int count = 1)
+        public async Task<bool> AddMockData(int count = 1, BillingNumberService? billingNumberService = null, CustomerService? customerService = null)
         {
-            var cards = Faker.GenerateMockCards(count);
-            foreach (var card in cards)
+            try
             {
-                var success = await AddCard(card);
-                if (success) continue;
-                logger.LogError("Failed to add mock card with ID {CardId}", card.Id);
+                // Get existing billing numbers
+                var billingNumbers = await (billingNumberService?.GetAllBillingNumbers() ?? Task.FromResult(new List<BillingNumber>()));
+                if (!billingNumbers.Any())
+                {
+                    logger.LogWarning("No billing numbers found. Cannot generate mock cards without valid BillingNumberId");
+                    return false;
+                }
+
+                // Get existing customers
+                var customers = await (customerService?.GetAllCustomers() ?? Task.FromResult(new List<Customer>()));
+                if (!customers.Any())
+                {
+                    logger.LogWarning("No customers found. Cannot generate mock cards without valid CustomerId");
+                    return false;
+                }
+
+                var billingNumberIds = billingNumbers.Select(b => b.Id).ToList();
+                var customerIds = customers.Select(c => c.Id).ToList();
+
+                var cards = Faker.GenerateMockCards(count, billingNumberIds, customerIds);
+                foreach (var card in cards)
+                {
+                    var success = await AddCard(card);
+                    if (success) continue;
+                    logger.LogError("Failed to add mock card with ID {CardId}", card.Id);
+                    return false;
+                }
+                return true;
+            }
+            catch (Exception ex)
+            {
+                logger.LogError(ex, "Error generating mock cards");
                 return false;
             }
-            return true;
         }
 
         public async Task<IssueCardResponse?> IssueCard(IssueCardRequest request)
